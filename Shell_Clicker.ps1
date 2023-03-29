@@ -1,5 +1,3 @@
-$Time1 = Get-Date
-
 $array = @{
 	"shells"    = @{"shell_amount" = 0; "SpS" = 0; "multiplier" = 0.12 }
 	"buildings" = @{
@@ -24,10 +22,14 @@ function price_fun {
 }
 
 function SpS_fun {
+	if ($null -eq $Time1) {
+		$Time1 = Get-Date
+	}
 	$Time2 = Get-Date
 	$TimeDiff = New-TimeSpan $Time1 $Time2
-	$TimeDiff = $TimeDiff.TotalMilliseconds
+	$TimeDiff = $TimeDiff.Seconds
 	$Time1 = Get-Date
+	$array.shells.shell_amount = $array.shells.shell_amount + ($TimeDiff * $array.shells.SpS)
 }
 
 function SpS_calc {
@@ -38,6 +40,7 @@ function SpS_calc {
 }
 
 function dis_fun {
+	SpS_fun
 	SpS_calc
 	price_fun
 	$dis_SpS = '{0:N}' -f $array.shells.SpS
@@ -47,15 +50,15 @@ function dis_fun {
 	Write-Host "SpS (Shells pro Sekunde):"$dis_SpS
 	Write-Host ""
 	for ($i = 0; $i -lt $array['buildings'].Count; $i++) {
-		if($i= -eq 0){
+		if ($i -eq 0) {
 			$dis_SpS = '{0:N}' -f $array.buildings[$i].SpS
-		}else{
-			$dis_amount = [string]::Format('{0:N0}', $array.buildings[$i].Amount)
-			
+		}
+		else {
+			$dis_SpS = [string]::Format('{0:N0}', $array.buildings[$i].SpS)
 		}
 		$dis_amount = [string]::Format('{0:N0}', $array.buildings[$i].Amount)
 		$dis_price = [string]::Format('{0:N0}', $array.buildings[$i].current_price)
-			Write-Host $array.buildings[$i].Name "($dis_SpS SpS)	-	Preis:	"$dis_price"`nMenge:	"$dis_amount "`n"
+		Write-Host $array.buildings[$i].Name "($dis_SpS SpS)	-	Preis:	"$dis_price"`nMenge:	"$dis_amount "`n"
 	}
 }
 
