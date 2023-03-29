@@ -1,10 +1,7 @@
-$multiply = 0.15
-$shell_amount = 0
-$shell_per_sec = 1500
 $Time1 = Get-Date
 
 $array = @{
-	"shells"    = @{"shell_amount" = 0; "SpS" = 0; "multiplier" = "0.15" }
+	"shells"    = @{"shell_amount" = 0; "SpS" = 0; "multiplier" = 0.12 }
 	"buildings" = @{
 		0 = @{"Amount" = 0; "Name" = "System_Bool"; "Price" = 15; "SpS" = 0.1; "current_price" = 15 };
 		1 = @{"Amount" = 0; "Name" = "System_Int"; "Price" = 100; "SpS" = 1; "current_price" = 100 };
@@ -21,7 +18,7 @@ $array = @{
 
 
 function price_fun {
-	for ($i = 0; $i -lt $array.Count; $i++) {
+	for ($i = 0; $i -lt $array['buildings'].Count; $i++) {
 		$array.buildings[$i].current_price = (($array.buildings.$i.Amount * $multiply) * $array.buildings.$i.Price) + $array.buildings.$i.Price
 	}
 }
@@ -34,11 +31,10 @@ function SpS_fun {
 }
 
 function SpS_calc {
-	for ($i = 0; $i -lt $array.Count; $i++) {
-		$SpS = $array.buildings[$i].Amount * $array.buildings[$i].SpS
-		$shell_per_sec = $shell_per_sec + $SpS
-		$array.shells.SpS = $array.shells.SpS + $SpS
+	for ($i = 0; $i -lt $array['buildings'].Count; $i++) {
+		$SpS = ($array.buildings[$i].Amount * $array.buildings[$i].SpS) + $SpS
 	}
+	$array.shells.SpS = $SpS
 }
 
 function dis_fun {
