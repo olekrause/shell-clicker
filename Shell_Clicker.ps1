@@ -1,7 +1,7 @@
 $multiply = 0.15
-
-$shell_per_sec = 0
 $shell_amount = 0
+$shell_per_sec = 1500
+$Time1 = Get-Date
 
 $array = @{
 	0 = @{"Amount" = 0; "Name" = "System_Bool"; "Price" = 15; "SpS" = 0.1; "current_price" = 15 };
@@ -16,14 +16,30 @@ $array = @{
 	9 = @{"Amount" = 0; "Name" = "Server"; "Price" = 75000000000; "SpS" = 1600000; "current_price" = 75000000000 };
 }
 
+
 function price_fun {
 	for ($i = 0; $i -lt $array.Count; $i++) {
 		$array[$i].current_price = (($array.$i.Amount * $multiply) * $array.$i.Price) + $array.$i.Price
 	}
 }
 
+function SpS_fun {
+	$Time2 = Get-Date
+	$TimeDiff = New-TimeSpan $Time1 $Time2
+	$TimeDiff = $TimeDiff.TotalMilliseconds
+	$Time1 = Get-Date
+}
+
+function SpS_calc {
+	for ($i = 0; $i -lt $array.Count; $i++) {
+		$SpS = $array[$i].Amount * $array[$i].SpS
+		$shell_per_sec = $shell_per_sec + $SpS
+	}
+}
 
 function dis_fun {
+	SpS_calc
+	price_fun
 	Clear-Host
 	Write-Host "Shells:"$shell_amount
 	Write-Host "SpS (Shells pro Sekunde):"$shell_per_sec
@@ -42,16 +58,20 @@ function dis_fun {
 }
 
 function main_fun {
-	price_fun
-	dis_fun
-	$in = Read-Host "Aktion"
-	if ($in -match '\d') {
-		$in = [int32]$in
-		$array.$in.Amount ++
+	while ($true) {
+		dis_fun
+		$in = Read-Host "Aktion"
+		if ($in -eq '') {
+			$shell_amount ++
+		}
+		if ($in -match '\d') {
+			$in = [int32]$in
+			#if ($shell_amount -ge $array[$in].current_price) {
+				$array.$in.Amount ++
+			#	$shell_amount = $shell_amount - $array[$in].current_price
+			#}
+		}
 	}
-	
 }
 
-while ($true) {
-	main_fun
-}
+main_fun
