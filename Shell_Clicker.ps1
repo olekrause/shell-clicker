@@ -40,14 +40,19 @@ function SpS_calc {
 function dis_fun {
 	SpS_calc
 	price_fun
+	$dis_SpS = '{0:N}' -f $array.shells.SpS
 	$dis_shells = [string]::Format('{0:N0}', $array.shells.shell_amount)
-	$dis_SpS = [string]::Format('{0:N0}', $array.shells.SpS)
 	Clear-Host
 	Write-Host "Shells:"$dis_shells
 	Write-Host "SpS (Shells pro Sekunde):"$dis_SpS
 	Write-Host ""
 	for ($i = 0; $i -lt $array['buildings'].Count; $i++) {
-		$dis_SpS = [string]::Format('{0:N0}', $array.buildings[$i].SpS)
+		if($i= -eq 0){
+			$dis_SpS = '{0:N}' -f $array.buildings[$i].SpS
+		}else{
+			$dis_amount = [string]::Format('{0:N0}', $array.buildings[$i].Amount)
+			
+		}
 		$dis_amount = [string]::Format('{0:N0}', $array.buildings[$i].Amount)
 		$dis_price = [string]::Format('{0:N0}', $array.buildings[$i].current_price)
 			Write-Host $array.buildings[$i].Name "($dis_SpS SpS)	-	Preis:	"$dis_price"`nMenge:	"$dis_amount "`n"
