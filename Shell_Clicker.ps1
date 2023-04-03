@@ -1,5 +1,6 @@
 $array = @{
-	"shells"    = @{"shell_amount" = 0; "SpS" = 0; "multiplier" = 0.12 }
+	"time"      = @{ "time_1" = $null; "time2" = $null }
+	"shells"    = @{ "shell_amount" = 0; "SpS" = 0; "multiplier" = 0.12 }
 	"buildings" = @{
 		0 = @{"Amount" = 0; "Name" = "System_Bool"; "Price" = 15; "SpS" = 0.1; "current_price" = 15 };
 		1 = @{"Amount" = 0; "Name" = "System_Int"; "Price" = 100; "SpS" = 1; "current_price" = 100 };
@@ -22,14 +23,14 @@ function price_fun {
 }
 
 function SpS_fun {
-	if ($null -eq $Time1) {
-		$Time1 = Get-Date
+	if ($null -eq $array.time.time_1) {
+		$array.time.time_1 = Get-Date
 	}
-	$Time2 = Get-Date
-	$TimeDiff = New-TimeSpan $Time1 $Time2
-	$TimeDiff = $TimeDiff.Seconds
-	$Time1 = Get-Date
-	$array.shells.shell_amount = $array.shells.shell_amount + ($TimeDiff * $array.shells.SpS)
+	$array.time.time_2 = Get-Date
+	$TimeDiff = New-TimeSpan $array.time.time_1 $array.time.time_2
+	$TimeDiff = $TimeDiff.Milliseconds
+	$array.time.time_1 = Get-Date
+	$array.shells.shell_amount = [math]::Round($array.shells.shell_amount + (($TimeDiff * $array.shells.SpS) / 1000))
 }
 
 function SpS_calc {
