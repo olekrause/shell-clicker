@@ -72,10 +72,10 @@ function main_fun {
 		}
 		if ($in -match '\d') {
 			$in = [int32]$in
-			#if ($shell_amount -ge $array[$in].current_price) {
-			$array.buildings.$in.Amount ++
-			#	$shell_amount = $shell_amount - $array[$in].current_price
-			#}
+			if ($shell_amount -ge $array[$in].current_price) {
+				$array.buildings.$in.Amount ++
+				$shell_amount = $shell_amount - $array[$in].current_price
+			}
 		}
 	}
 }
