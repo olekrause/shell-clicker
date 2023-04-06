@@ -28,7 +28,7 @@ function SpS_fun {
 	}
 	$array.time.time_2 = Get-Date
 	$TimeDiff = New-TimeSpan $array.time.time_1 $array.time.time_2
-	$TimeDiff = $TimeDiff.Milliseconds
+	$TimeDiff = $TimeDiff.TotalMilliseconds
 	$array.time.time_1 = Get-Date
 	$array.shells.shell_amount = [math]::Round($array.shells.shell_amount + (($TimeDiff * $array.shells.SpS) / 1000))
 }
@@ -72,10 +72,11 @@ function main_fun {
 		}
 		if ($in -match '\d') {
 			$in = [int32]$in
-			if ($shell_amount -ge $array[$in].current_price) {
+			if ($array.shells.shell_amount -ge $array[$in].current_price) {
 				$array.buildings.$in.Amount ++
-				$shell_amount = $shell_amount - $array[$in].current_price
+				$array.shells.shell_amount = $array.shells.shell_amount - $array[$in].current_price
 			}
+			else {}
 		}
 	}
 }
